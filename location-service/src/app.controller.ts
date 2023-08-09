@@ -6,6 +6,7 @@ import { EventPattern, MessagePattern } from '@nestjs/microservices';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  //Nhận tin theo pattern 'greeting' từ Producer
   @MessagePattern({ cmd: 'greeting' })
   getGreetingMessage(name: string): string {
     console.log(name);

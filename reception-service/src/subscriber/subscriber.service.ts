@@ -3,6 +3,9 @@ import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class SubscriberService {
+
+  // 2 client để giao tiếp với 2 service :location và booking
+  // check cài đặt 2 client này ở SubscriberModule
   constructor(
     @Inject('SUBSCRIBER_SERVICE_LOCATION')
     private clientLocation: ClientProxy,
@@ -10,6 +13,7 @@ export class SubscriberService {
     private clientBooking: ClientProxy,
   ) {}
 
+  // Gửi thep pattern 'greeting' đến client của Location
   async getHelloMicro(): Promise<any> {
     return this.clientLocation.send({ cmd: 'greeting' }, 'Reception');
   }
@@ -18,6 +22,7 @@ export class SubscriberService {
     return this.clientLocation.send({ cmd: 'body' }, body);
   }
 
+  // Gửi thep pattern 'booking' đến client của Booking
   async postMicroBooking(body: any): Promise<any> {
     return this.clientBooking.send({ cmd: 'booking' }, body);
   }
@@ -30,6 +35,8 @@ export class SubscriberService {
     return message;
   }
 
+  // - send sẽ đợi bên Consumer trả lời
+  // - emit thì không đợi bên Consumer trả lời
   async publishEvent() {
     this.clientLocation.emit('event', {
       addres: 'Tan Binh',

@@ -51,9 +51,9 @@ docker compose up -d
 - Chạy cả 3 dịch vụ (mỗi service là một terminal)
 - Producer duy nhất nằm ở reception-service, truy cập swagger để test
 ```
-http:\\localhost:3000/api
+http://localhost:3000/api
 ```
-- Xem các log tương ứng ở các Consumer khi gửi từ Producer
+- Xem các log tương ứng ở các Consumer (terminal) khi gửi từ Producer
 
 ## Mô hình
 
