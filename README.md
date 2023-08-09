@@ -45,7 +45,7 @@ docker compose up -d
 - Theo dõi docker container tại **Docker Desktop** (xem log)
 - Đợi một chút có thể thử vào `http://localhost:15672` (RabbitMQ) hoặc  `http://localhost:9200` (Elastic Search) để check coi chạy được chưa 
 ## Hướng dẫn sơ microservice (cách truyền tin bằng Rabbit MQ)
-- Thực hiện các bước trên để **chạy RabbitMQ** trên Docker (k cần elastic search)
+- Thực hiện các bước [trên](https://github.com/thaichihien/telephone-booking-operator/edit/main/README.md#h%C6%B0%E1%BB%9Bng-d%E1%BA%ABn-docker) để **chạy RabbitMQ** trên Docker (k cần elastic search)
 - Nhớ chạy `npm i` hoặc `pnpm i` ở cả 3 dịch vụ (hiện tại cả 3 service đang dùng **pnpm**)
 - Chuyển tên tất cả file `.env.example` ở cả 3 dịch vụ (reception, location, booking) thành `.env`
 - Chạy cả 3 dịch vụ (mỗi service là một terminal)
@@ -57,7 +57,7 @@ http:\\localhost:3000/api
 
 ## Mô hình
 
-![architecture-model]()
+![architecture-model](https://github.com/thaichihien/telephone-booking-operator/blob/main/doc/architecture-model.png)
 
 
 
