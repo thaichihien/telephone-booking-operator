@@ -4,6 +4,9 @@ import { AppService } from './app.service';
 import { ConfigModule} from '@nestjs/config'
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { SubscriberModule } from './subscriber/subscriber.module';
+import { LocationModule } from './location/location.module';
+import { CustomerModule } from './customer/customer.module';
+
 
 @Module({
   imports: [
@@ -12,6 +15,8 @@ import { SubscriberModule } from './subscriber/subscriber.module';
       isGlobal: true,
     }),
     SubscriberModule,
+    LocationModule,
+    CustomerModule,
   ],
   controllers: [AppController],
   providers: [AppService,],
