@@ -18,13 +18,9 @@ export class GeocodingService {
     @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
 
-  create(createGeocodingDto: CreateGeocodingDto) {
-    return 'This action adds a new geocoding';
-  }
-
   async searchAdress(address: string) {
     const { data } = await firstValueFrom(
-      this.httpService.get('').pipe(
+      this.httpService.get(`https://rsapi.goong.io/geocode?address`).pipe(
         catchError((error: AxiosError) => {
           throw new InternalServerErrorException(
             'get address server error : ' + error,
@@ -61,7 +57,7 @@ export class GeocodingService {
     const searchPlace = data.results[0];
     await this.cacheService.set(searchPlace.place_id, searchPlace);
 
-    console.log("get from api");
+    console.log('get from api');
     return searchPlace;
   }
 

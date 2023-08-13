@@ -8,9 +8,25 @@ export class AppController {
 
   //Nhận tin theo pattern 'greeting' từ Producer
   @MessagePattern({ cmd: 'greeting' })
-  getGreetingMessage(name: string): string {
+  getGreetingMessage(name: string) {
     console.log(name);
-    return `Hello ${name}`;
+
+    const arr = [
+      {
+        name: 'thai',
+        phone: '123456',
+      },
+      {
+        name: 'chi',
+        phone: '123456',
+      },
+      {
+        name: 'hien',
+        phone: '123456',
+      },
+    ];
+
+    return arr;
   }
 
   @MessagePattern({ cmd: 'body' })

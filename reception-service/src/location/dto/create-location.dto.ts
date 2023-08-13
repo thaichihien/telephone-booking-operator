@@ -15,6 +15,11 @@ export class CreateLocationDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  readonly place_id: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   readonly phone: string;
 
   @ApiProperty()

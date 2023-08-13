@@ -45,7 +45,7 @@ export class LocationController {
   @ApiOperation({ summary: 'search address from google api' })
   @Get('search-api')
   findOneByAPI(@Query('address') address: string) {
-    return this.locationService.find(address);
+    return this.locationService.findFromService(address);
   }
 
   // - TEST

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SubscriberService } from './subscriber/subscriber.service';
+import {lastValueFrom} from 'rxjs'
 
 @Injectable()
 export class AppService {
@@ -13,7 +14,11 @@ export class AppService {
   }
 
   async testgetHelloMicro() : Promise<any> {
-    return this.subscriberService.getHelloMicro();
+    const result = await lastValueFrom(await this.subscriberService.getHelloMicro());
+
+    console.log(result[0])
+
+    return result
   }
 
   async testpostMicro(body : any) : Promise<any>  {

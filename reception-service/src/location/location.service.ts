@@ -4,6 +4,8 @@ import { UpdateLocationDto } from './dto/update-location.dto';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { ConfigService } from '@nestjs/config';
 import { SubscriberService } from 'src/subscriber/subscriber.service';
+import { lastValueFrom } from 'rxjs';
+import { CreateCustomerDto } from 'src/customer/dto/create-customer.dto';
 
 @Injectable()
 export class LocationService {
@@ -80,6 +82,33 @@ export class LocationService {
   async create(createLocationDto: CreateLocationDto) {
     const created = await this.esService.index({
       index: this.index,
+      id: createLocationDto.place_id,
+      document: createLocationDto,
+    });
+
+    return created;
+  }
+
+  async findPlaceAndCreate(createCustomerDto: CreateCustomerDto) {
+    // -findDetailFromService
+
+    const placeDetail = await this.findDetailFromService(
+      createCustomerDto.address_id,
+    );
+
+    const createLocationDto: CreateLocationDto = {
+      address: placeDetail.address,
+      place_id: placeDetail.place_id,
+      phone: createCustomerDto.phone,
+      fullname: createCustomerDto.name,
+      coordinates: {
+        lat: placeDetail.coordinate.lat,
+        lon: placeDetail.coordinate.long,
+      },
+    };
+
+    const created = await this.esService.index({
+      index: this.index,
       document: createLocationDto,
     });
 
@@ -110,24 +139,44 @@ export class LocationService {
     return result;
   }
 
+  async findDetailFromService(placeId: string) {
+    const result = await lastValueFrom(
+      await this.subscriberService.sendToLocationService('place', placeId),
+    );
+
+    const place = result[0];
+
+    const data = {
+      place_id: place.place_id,
+      address: place.formatted_address,
+      coordinate: {
+        lat: place.geometry.location.lat,
+        long: place.geometry.location.lng,
+      },
+    };
+
+    return data;
+  }
+
   async findFromService(address: string) {
-    const result = await this.subscriberService.sendToLocationService(
-      'address',
-      address,
+    const result = await lastValueFrom(
+      await this.subscriberService.sendToLocationService('address', address),
     );
 
     // -- map results
+    const predictions = result.map((place) => ({
+      address: place.formatted_address,
+      place_id: place.place_id,
+    }));
 
     // -- send to client
 
-    return;
+    return predictions;
   }
 
   // -- TEST
   async findAllTest() {
-   
-
-    return "all";
+    return 'all';
   }
 
   async findTest(address: string) {
@@ -140,7 +189,7 @@ export class LocationService {
     //   },
     // });
 
-    return "result";
+    return 'result';
   }
 
   async findFromServiceTest(address: string) {
@@ -150,10 +199,11 @@ export class LocationService {
     );
 
     // -- map results
+    const placeSuggesstion = result;
 
     // -- send to client
 
-    return "result";
+    return 'result';
   }
 
   async update(id: string, updateLocationDto: UpdateLocationDto) {

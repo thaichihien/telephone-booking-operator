@@ -11,6 +11,7 @@ export class AppController {
   @ApiOperation({summary : "Gửi đến location-service bằng get"})
   @Get('/greeting')
   async getHelloMicro() {
+
     return this.appService.testgetHelloMicro();
   }
 

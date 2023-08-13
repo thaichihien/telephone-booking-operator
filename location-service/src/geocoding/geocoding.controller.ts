@@ -14,6 +14,11 @@ export class GeocodingController {
     return this.geocodingService.searchAdress(address)
   }
 
+  @MessagePattern({ cmd: 'place' })
+  searchCoordinate(@Payload() placeId: string) {
+    return this.geocodingService.findCoordinate(placeId)
+  }
+
   @MessagePattern('createGeocoding')
   create(@Payload() createGeocodingDto: CreateGeocodingDto) {
     return this.geocodingService.create(createGeocodingDto);
