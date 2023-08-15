@@ -18,8 +18,13 @@ export class CreateCustomerDto {
   @IsNotEmpty()
   readonly address_id: string;
 
+  @ApiProperty({ example: 'id tài xế' })
+  @IsString()
+  @IsNotEmpty()
+  readonly driver_id: string;
+
   @ApiProperty({ example: 4 })
   @IsString()
   @IsNotEmpty()
-  readonly seat_number: string;
+  readonly seat_number: number;
 }

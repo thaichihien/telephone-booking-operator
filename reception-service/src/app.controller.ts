@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
-import { CreateLocationDto } from './temp.dto';
+import { CreateLocationDtoFake } from './temp.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Test Mircoservice')
@@ -17,13 +17,13 @@ export class AppController {
 
   @ApiOperation({summary : "Gửi đến location-service bằng post"})
   @Post('/post')
-  async postMicro(@Body() body: CreateLocationDto) {
+  async postMicro(@Body() body: CreateLocationDtoFake) {
     return this.appService.testpostMicro(body);
   }
 
   @ApiOperation({summary : "Gửi đến booking-service bằng post"})
   @Post('/booking')
-  async postMicroBooking(@Body() body: CreateLocationDto) {
+  async postMicroBooking(@Body() body: CreateLocationDtoFake) {
     return this.appService.testpostMicroBooking(body);
   }
 

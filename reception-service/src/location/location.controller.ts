@@ -11,13 +11,14 @@ import {
 import { LocationService } from './location.service';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Search Address')
 @Controller('location')
 export class LocationController {
   constructor(private readonly locationService: LocationService) {}
 
+  // - 0
   @ApiOperation({ summary: 'Check elasticsearch connect' })
   @Get()
   checkConnection() {
@@ -42,6 +43,13 @@ export class LocationController {
     return this.locationService.find(address);
   }
 
+  @ApiOperation({ summary: 'search address by id from history' })
+  @Get('search-id/:id')
+  findOneById(@Param('id') id: string) {
+    return this.locationService.findById(id);
+  }
+
+  // - 2 
   @ApiOperation({ summary: 'search address from google api' })
   @Get('search-api')
   findOneByAPI(@Query('address') address: string) {
@@ -51,19 +59,29 @@ export class LocationController {
   // - TEST
 
   @ApiOperation({ summary: 'get all address from history (test)' })
-  @Get('all')
+  @Get('all/test')
   findAllTest() {
     return this.locationService.findAllTest();
   }
 
+  @ApiQuery({
+    name : 'address',
+    required : true,
+    example : 'nguyen van cu'
+  })
   @ApiOperation({ summary: 'search address from history (test)' })
-  @Get('search')
+  @Get('search/test')
   findOneTest(@Query('address') address: string) {
     return this.locationService.findTest(address);
   }
 
+  @ApiQuery({
+    name : 'address',
+    required : true,
+    example : '227 Nguyễn Văn Cừ'
+  })
   @ApiOperation({ summary: 'search address from google api (test)' })
-  @Get('search-api')
+  @Get('search-api/test')
   findOneByAPITest(@Query('address') address: string) {
     return this.locationService.findFromServiceTest(address);
   }
@@ -81,6 +99,7 @@ export class LocationController {
     return this.locationService.remove(id);
   }
 
+  // - 1
   @Get('index')
   createIndex() {
     return this.locationService.createIndex();

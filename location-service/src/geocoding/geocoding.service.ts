@@ -10,17 +10,29 @@ import { HttpService } from '@nestjs/axios';
 import { AxiosError } from 'axios';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { ThirdPartyService, UrlFactory } from 'src/utils/url/url-factory';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class GeocodingService {
   constructor(
     private readonly httpService: HttpService,
+    private readonly urlFactory: UrlFactory,
+    private readonly configService: ConfigService,
     @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
 
   async searchAdress(address: string) {
+    const geocodingUrl = this.urlFactory
+      .getUrl(ThirdPartyService.GOONG)
+      .addApiKey(this.configService.get('MAP_API_KEY'))
+      .addPath('/geocode')
+      .addQuery('address', address);
+
+    console.log(geocodingUrl.url());
+
     const { data } = await firstValueFrom(
-      this.httpService.get(`https://rsapi.goong.io/geocode?address`).pipe(
+      this.httpService.get(geocodingUrl.url()).pipe(
         catchError((error: AxiosError) => {
           throw new InternalServerErrorException(
             'get address server error : ' + error,
@@ -44,8 +56,16 @@ export class GeocodingService {
       return place;
     }
 
+    const geocodingUrl = this.urlFactory
+      .getUrl(ThirdPartyService.GOONG)
+      .addApiKey(this.configService.get('MAP_API_KEY'))
+      .addPath('/geocode')
+      .addQuery('place_id', placeId);
+
+    console.log(geocodingUrl.url());
+
     const { data } = await firstValueFrom(
-      this.httpService.get('').pipe(
+      this.httpService.get(geocodingUrl.url()).pipe(
         catchError((error: AxiosError) => {
           throw new InternalServerErrorException(
             'get address server error : ' + error,
@@ -61,19 +81,24 @@ export class GeocodingService {
     return searchPlace;
   }
 
-  findAll() {
-    return `This action returns all geocoding`;
-  }
+  async testRedis(id: string) {
+   
+    console.log('86');
+    console.log(id);
+    const place = await this.cacheService.get(id);
+    if (place) {
+      console.log('get from cache');
+      return place;
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} geocoding`;
-  }
-
-  update(id: number, updateGeocodingDto: UpdateGeocodingDto) {
-    return `This action updates a #${id} geocoding`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} geocoding`;
-  }
+    const placeApi = {
+      name: 'new',
+      coordianet: 20,
+    };
+    console.log('97');
+    const cache = await this.cacheService.set(id, placeApi);
+    console.log(cache);
+    console.log('get from api');
+    return placeApi;
+  } 
 }

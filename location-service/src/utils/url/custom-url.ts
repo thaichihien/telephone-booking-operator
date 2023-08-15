@@ -1,8 +1,7 @@
-export enum ThirdPartyService {}
-
-abstract class CustomUrl {
+export abstract class CustomUrl {
   readonly host: string;
   apiKey: string;
+  path: string;
   query: { [key: string]: string }[] = [];
 
   constructor(hostname: string) {
@@ -14,13 +13,21 @@ abstract class CustomUrl {
     return this;
   }
 
+  addPath(path: string) {
+    this.path = path;
+    return this;
+  }
+
   addQuery(param: string, value: string) {
-    this.query[param] = value;
+    const q = {[param] : value}
+    this.query.push(q)
+    
+
     return this;
   }
 
   url(): string {
-    const url = `${this.host}?api_key=${this.apiKey}`;
+    const url = `${this.host}${this.path}?api_key=${this.apiKey}&`;
     let queries: string[] = [];
 
     this.query.forEach((q) => {

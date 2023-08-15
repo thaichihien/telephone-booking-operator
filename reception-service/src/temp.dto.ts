@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 //this dto only for test microservice,can remove after test
-export class CreateLocationDto {
+export class CreateLocationDtoFake {
   @ApiProperty()
   @IsString() 
   @IsNotEmpty()

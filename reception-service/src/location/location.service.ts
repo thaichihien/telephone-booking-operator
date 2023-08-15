@@ -45,6 +45,9 @@ export class LocationService {
               type: 'text',
               analyzer: 'my_vi_analyzer',
             },
+            place_id: {
+              type: 'keyword',
+            },
             phone: {
               type: 'keyword',
             },
@@ -92,6 +95,23 @@ export class LocationService {
   async findPlaceAndCreate(createCustomerDto: CreateCustomerDto) {
     // -findDetailFromService
 
+    const resultFromES = await this.findByPlaceId(createCustomerDto.address_id);
+
+    if (resultFromES.hits.hits.length > 0) {
+      const place : any = resultFromES.hits.hits[0]._source;
+      const data = {
+        place_id: place.place_id,
+        address: place.formatted_address,
+        coordinate: {
+          lat: place.geometry.location.lat,
+          long: place.geometry.location.lng,
+        },
+      };
+
+      return data;
+    }
+
+
     const placeDetail = await this.findDetailFromService(
       createCustomerDto.address_id,
     );
@@ -112,7 +132,7 @@ export class LocationService {
       document: createLocationDto,
     });
 
-    return created;
+    return placeDetail;
   }
 
   async findAll() {
@@ -130,8 +150,38 @@ export class LocationService {
     const result = await this.esService.search({
       index: this.index,
       query: {
-        fuzzy: {
-          address: address,
+        match: {
+          address: {
+            query: address,
+          },
+        },
+      },
+    });
+
+    return result.hits.hits;
+  }
+
+  async findById(id: string) {
+    const result = await this.esService.search({
+      index: this.index,
+      query: {
+        ids: {
+          values: [id],
+        },
+      },
+    });
+
+    return result;
+  }
+
+  async findByPlaceId(id: string) {
+    const result = await this.esService.search({
+      index: this.index,
+      query: {
+        match: {
+          place_id: {
+            query: id,
+          },
         },
       },
     });
@@ -144,7 +194,9 @@ export class LocationService {
       await this.subscriberService.sendToLocationService('place', placeId),
     );
 
-    const place = result[0];
+    //console.log(result);
+
+    const place = result;
 
     const data = {
       place_id: place.place_id,
@@ -163,6 +215,8 @@ export class LocationService {
       await this.subscriberService.sendToLocationService('address', address),
     );
 
+    console.log(result);
+
     // -- map results
     const predictions = result.map((place) => ({
       address: place.formatted_address,
@@ -176,34 +230,97 @@ export class LocationService {
 
   // -- TEST
   async findAllTest() {
-    return 'all';
+    const all = {
+      took: 18,
+      timed_out: false,
+      _shards: {
+        total: 1,
+        successful: 1,
+        skipped: 0,
+        failed: 0,
+      },
+      hits: {
+        total: {
+          value: 1,
+          relation: 'eq',
+        },
+        max_score: 0.3439677,
+        hits: [
+          {
+            _index: 'location',
+            _id: 'OnOO94kBBp-V5nbw5cGU',
+            _score: 0.3439677,
+            _source: {
+              address: '227 Nguyễn Văn Cừ, Phường 4, Quận 5, Hồ Chí Minh',
+              place_id:
+                'LPG0o1ZmSzlgn8_EhhEsJniYYfW1dpqqsDpsp0NnqD24mSj6tU2OqHunAYYe3d0IyeLRbgoZmiq9hiFSGtUtCRWe6W4ODS5lEYqZQ74Z2hhBjnEOGsBCWO2G0S8aGEf0_',
+              phone: '258456',
+              fullname: 'Hien',
+              coordinates: {
+                lat: 10.763554524000028,
+                lon: 106.68216477300007,
+              },
+            },
+          },
+        ],
+      },
+    };
+    return all;
   }
 
   async findTest(address: string) {
-    // const result = await this.esService.search({
-    //   index: this.index,
-    //   query: {
-    //     fuzzy: {
-    //       address: address,
-    //     },
-    //   },
-    // });
+    const resultSaved = [
+      {
+        _index: 'location',
+        _id: 'OnOO94kBBp-V5nbw5cGU',
+        _score: 0.3439677,
+        _source: {
+          address: '227 Nguyễn Văn Cừ, Phường 4, Quận 5, Hồ Chí Minh',
+          place_id:
+            'LPG0o1ZmSzlgn8_EhhEsJniYYfW1dpqqsDpsp0NnqD24mSj6tU2OqHunAYYe3d0IyeLRbgoZmiq9hiFSGtUtCRWe6W4ODS5lEYqZQ74Z2hhBjnEOGsBCWO2G0S8aGEf0_',
+          phone: '258456',
+          fullname: 'Hien',
+          coordinates: {
+            lat: 10.763554524000028,
+            lon: 106.68216477300007,
+          },
+        },
+      },
+    ];
 
-    return 'result';
+    return resultSaved;
   }
 
   async findFromServiceTest(address: string) {
-    const result = await this.subscriberService.sendToLocationService(
-      'address',
-      address,
-    );
+    const result = [
+      {
+        address: '227 Nguyễn Văn Cừ, Lê Lợi, Bắc Giang, Bắc Giang',
+        place_id:
+          'UHK3kGeqa7l3jngUp2SE0WnQeHAud5_kOo9rpEB199--0E4SvHV-6KRWrYDmSAujlfqdgLb5dpeRwWogzd6m5k2kxbAlooYiXu3NBVWWXl_63jVIBoQGHl3ClWiqXAOzX',
+      },
+      {
+        address: '227 Nguyễn Văn Cừ, Ngọc Lâm, Long Biên, Hà Nội',
+        place_id:
+          'dUOdXLwWApV86yy2pmS7pGiXUQmjdZmMd9d6V7xqmdBy3UAwvwKWpHGWXDiiAOulcpZcNaJclaZz_TJyprxZ0hjdenxYje-1cfyjV0NllY9wlVADowOFp3LVWCiPVAu65',
+      },
+      {
+        address: '227 Nguyễn Văn Cừ, Phường 4, Quận 5, Hồ Chí Minh',
+        place_id:
+          'LPG0o1ZmSzlgn8_EhhEsJniYYfW1dpqqsDpsp0NnqD24mSj6tU2OqHunAYYe3d0IyeLRbgoZmiq9hiFSGtUtCRWe6W4ODS5lEYqZQ74Z2hhBjnEOGsBCWO2G0S8aGEf0_',
+      },
+      {
+        address: '227 Nguyễn Văn Cừ, An Hòa, Ninh Kiều, Cần Thơ',
+        place_id:
+          'vBpesn6YoKl52DoxrKqAxk2wQROUr5N-fZJSWZlVjJ5ihUpeon--4EqFMh23bJDjfaxVOrV8JZh1tXuwr1F85kp7c1GGav0HU43gFSpxsnPV5hlkKqgqMnHuuUSGcC-fc',
+      },
+      {
+        address: '227 Nguyễn Văn Cừ, Võ Cường, Bắc Ninh, Bắc Ninh',
+        place_id:
+          'Vrl_ekWTe6ZMlagUc1Hg5HG6ml5gfJvhVrmbKk5yn9ki37J6MXSLxiDdsFp0smr6eqiqG3uL6FWtuHlfbFG3m9OysSNNdKvff7ubWV5rm_J-gNa0NVg2Lm3ypmyZWDODb',
+      },
+    ];
 
-    // -- map results
-    const placeSuggesstion = result;
-
-    // -- send to client
-
-    return 'result';
+    return result;
   }
 
   async update(id: string, updateLocationDto: UpdateLocationDto) {
