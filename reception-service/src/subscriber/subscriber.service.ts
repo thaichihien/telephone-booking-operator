@@ -16,6 +16,10 @@ export class SubscriberService {
     return this.clientLocation.send({ cmd: pattern }, data);
   }
 
+  async sendToBookingService(pattern: string, data: any) {
+    return this.clientBooking.send({ cmd: pattern }, data);
+  }
+
   // Gửi thep pattern 'greeting' đến client của Location
   async getHelloMicro(): Promise<any> {
     return this.clientLocation.send({ cmd: 'greeting' }, 'Reception');

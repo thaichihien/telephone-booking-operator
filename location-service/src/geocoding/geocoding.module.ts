@@ -21,20 +21,6 @@ import { redisStore } from 'cache-manager-redis-yet';
             port: configService.get('REDIS_PORT'),
           },
         }),
-
-        // const store = await redisStore({
-        //   url: configService.get('REDIS_URL'),
-        //   ttl: 6000 * 10,
-        // });
-        // const client= store.getClient()
-        // if(client.isOpen){
-        //   await client.connect()
-        // }
-
-        // await client.ping()
-        // return {
-        //   store: () => store,
-        // };
       }),
       inject: [ConfigService],
     }),

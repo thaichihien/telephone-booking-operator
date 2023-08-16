@@ -97,6 +97,7 @@ export class LocationService {
 
     const resultFromES = await this.findByPlaceId(createCustomerDto.address_id);
 
+    console.log(resultFromES);
     if (resultFromES.hits.hits.length > 0) {
       const place : any = resultFromES.hits.hits[0]._source;
       const data = {

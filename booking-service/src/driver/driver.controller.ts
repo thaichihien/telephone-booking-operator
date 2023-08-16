@@ -13,6 +13,7 @@ import { join } from 'path';
 import { DriverLocationUpdateDto } from './dtos/driver.location.update.dto';
 import { DriverRefreshTokenDto } from './dtos/driver.refresh.dto';
 import { DriverDeviceTokenDto } from './dtos/driver.devicetoken.dto';
+import { MessagePattern } from '@nestjs/microservices';
 
 
 export const storage = {
@@ -38,8 +39,10 @@ export class DriverController {
         return await this.driverService.getDriverById(userId);
     }
 
-    @ApiOperation({ summary: "Get all driver" })
-    @Get()
+
+    //@ApiOperation({ summary: "Get all driver" })
+    //@Get()
+    @MessagePattern({ cmd: 'drivers' })
     async getAllDriver() {
         return await this.driverService.getAllDriver();
     }

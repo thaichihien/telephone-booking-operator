@@ -8,25 +8,25 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // const configService = app.get(ConfigService);
+  const configService = app.get(ConfigService);
 
-  // const user = configService.get('RABBITMQ_USER');
-  // const password = configService.get('RABBITMQ_PASSWORD');
-  // const host = configService.get('RABBITMQ_HOST');
-  // const queueName = configService.get('RABBITMQ_QUEUE_NAME');
+  const user = configService.get('RABBITMQ_USER');
+  const password = configService.get('RABBITMQ_PASSWORD');
+  const host = configService.get('RABBITMQ_HOST');
+  const queueName = configService.get('RABBITMQ_QUEUE_NAME');
 
-  // await app.connectMicroservice<MicroserviceOptions>({
-  //   transport: Transport.RMQ,
-  //   options: {
-  //     urls: [`amqp://${user}:${password}@${host}`],
-  //     queue: queueName,
-  //     queueOptions: {
-  //       durable: false,
-  //     },
-  //   },
-  // });
+  await app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [`amqp://${user}:${password}@${host}`],
+      queue: queueName,
+      queueOptions: {
+        durable: false,
+      },
+    },
+  });
  
-  // app.startAllMicroservices();
+  await app.startAllMicroservices();
 
   // - comment from line 9 -> line 27 and uncomment line 30 to remove microservice
 
@@ -50,6 +50,6 @@ async function bootstrap() {
     })
   );
 
-  app.listen(3000)
+  await app.listen(3001)
 }
 bootstrap();

@@ -10,9 +10,9 @@ export class BookingService {
         private readonly prismaService: PrismaService
     ) {}
 
-    async createNewRide(createRideDto: CreateRideDto): Promise<Trip | [] > {
+    async createNewRide(request: any): Promise<Trip | [] > {
         
-        const {pickup_address, name, phone, seat_number, driver_id, status} = createRideDto;
+        const {address, name, phone, seat_number, driver_id} = request;
 
         const driverExists = await this.prismaService.driver.findFirst({
             where: {
@@ -29,11 +29,11 @@ export class BookingService {
         const newRide = await this.prismaService.trip.create({
             data: {
                 driverID: driver_id,
-                source: pickup_address,
+                source: address.address,
                 riderName: name, 
                 total_seat: seat_number,
                 riderPhone: phone,
-                status: status
+                status: "Waiting"
             }
         });
 

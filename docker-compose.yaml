@@ -21,8 +21,10 @@ services:
       bootstrap.memory_lock: "true"
       discovery.type: "single-node"
       xpack.security.enabled: "false"
+    volumes:
+      - ./esdata:/usr/share/elasticsearch/data
     networks:
-      - elastic
+      - mirco
   rabbitmq:
     container_name: rabbit-container
     image: rabbitmq:3-management
@@ -30,7 +32,7 @@ services:
       - "5672:5672"
       - "15672:15672"
     networks:
-      - elastic
+      - mirco
   redis:
     container_name: cache
     image: redis
@@ -38,12 +40,82 @@ services:
       - 6379:6379
     volumes:
       - redis:/data
+    networks:
+      - mirco
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5433:5432'
+    networks:
+      - mirco
+    volumes: 
+      - db:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+  reception:
+    container_name: reception-service
+    build: 
+      context: ./reception-service
+      dockerfile: Dockerfile
+    env_file:
+      - ./reception-service/.env
+    environment:
+      - ELASTIC_URL=http://elasticsearch:9200
+      - RABBITMQ_HOST=rabbitmq:5672
+    ports:
+      - 3000:3000
+    depends_on:
+      - elasticsearch
+      - rabbitmq
+    networks:
+      - mirco
+  location:
+    container_name: location-service
+    build: 
+      context: ./location-service
+      dockerfile: Dockerfile
+    env_file:
+      - ./location-service/.env
+    environment:
+      - REDIS_HOST=redis
+      - RABBITMQ_HOST=rabbitmq:5672
+    depends_on:
+      - redis
+      - rabbitmq
+    networks:
+      - mirco
+  booking:
+    container_name: booking-service
+    build: 
+      context: ./booking-service
+      dockerfile: Dockerfile
+    env_file:
+      - ./booking-service/.env
+    environment:
+      - PORT = 5432
+      - DB_NAME=crabDB
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - RABBITMQ_HOST=rabbitmq:5672
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/crabDB
+    depends_on:
+      - db
+      - rabbitmq
+    ports:
+      - 3001:3001
+    networks:
+      - mirco
 
 networks:
-  elastic:
+  mirco:
     driver: bridge
 
 volumes:
-  searchdb:
+  esdata:
+  db:
+    driver: local
   redis:
     driver: local

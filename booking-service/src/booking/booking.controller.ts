@@ -3,6 +3,7 @@ import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/s
 import { BookingService } from './booking.service';
 import { CreateRideDto } from './dtos/create-ride.dto';
 import { UpdateRideDto } from './dtos/update-ride.dto';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
 @ApiTags('booking')
 @Controller('booking')
@@ -11,12 +12,17 @@ export class BookingController {
     constructor(private bookingService: BookingService){}
 
     // CREATE NEW RIDE
-    @ApiOperation({ summary: "Create a new ride" })
-    @ApiBody({ type: CreateRideDto })
-    @Post()
-    async createADriver(@Body() rideCreateDto: CreateRideDto) {
-        return await this.bookingService.createNewRide(rideCreateDto);
+    @MessagePattern({ cmd: 'booking-request' })
+    async createADriver(@Payload() request: any) {
+        return await this.bookingService.createNewRide(request);
     }
+
+    // @ApiOperation({ summary: "Create a new ride" })
+    // @ApiBody({ type: CreateRideDto })
+    // @Post()
+    // async createADriver(@Body() rideCreateDto: CreateRideDto) {
+    //     return await this.bookingService.createNewRide(rideCreateDto);
+    // }
 
     @ApiOperation({ summary: "Get all trip" })
     @Get()
