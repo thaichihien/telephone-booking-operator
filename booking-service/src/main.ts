@@ -26,7 +26,7 @@ async function bootstrap() {
     },
   });
  
-  await app.startAllMicroservices();
+  app.startAllMicroservices();
 
   // - comment from line 9 -> line 27 and uncomment line 30 to remove microservice
 

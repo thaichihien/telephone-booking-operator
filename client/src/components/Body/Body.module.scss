@@ -1,0 +1,58 @@
+.body{
+    background-color: #FFD6C4;
+    height: calc(100vh - 60px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-inner{
+    position: relative;
+    padding: 32px;
+    width: 100%;
+    // max-width: 420px;
+    // background-color: #fff;
+    font-size: 2rem;
+    display: flex;
+}
+
+.popup-inner label{
+    margin-right: 10px;
+}
+
+.form-submit{
+    width: 100%;
+    max-width: 420px;
+    background-color: #fff;
+    margin-right: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+}
+
+.form-submit button{
+    width: 100px;
+}
+
+.form-item{
+    display: flex;
+    justify-content: space-between;
+    margin: 5px;
+}
+
+.form-submit input,
+.form-submit select{
+    width: 200px;
+}
+
+.history{
+    height: 500px;
+    width: 800px;
+    background-color: #fff;
+    
+}
+
+.btn-search-address{
+   
+}
