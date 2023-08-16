@@ -33,11 +33,11 @@ export class BookingController {
         return await this.bookingService.getTripById(id);
     }
 
-    // UPDATE A DRIVER
+    // UPDATE A RIDE
     @ApiOperation({ summary: "Update a trip" })
     @ApiBody({ type: UpdateRideDto })
     @Put(':id')
-    async updateADriver(@Param('id') id: string, @Body() rideUpdateDto: UpdateRideDto) {
+    async updateARide(@Param('id') id: string, @Body() rideUpdateDto: UpdateRideDto) {
         return await this.bookingService.updateRideById(id, rideUpdateDto);
     }
 
