@@ -40,4 +40,4 @@ docker compose up -d
 - Đợi một chút cho toàn bộ container chạy thì vào `http:\\localhost:4000` để truy cập giao diện tổng đài
 ## Mô hình
 
-![architecture-model]()
+![architecture-model](https://github.com/thaichihien/telephone-booking-operator/blob/main/doc/architecture-model.png)
