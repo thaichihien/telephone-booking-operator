@@ -84,7 +84,7 @@ export class CustomUrlBuilder {
 
     if (queries.length > 0) {
       const queryParams = queries.join('&');
-      return `${url}${queryParams}`;
+      return `${url}?${queryParams}`;
     }
 
     return url;

@@ -14,6 +14,8 @@ export class GoongService extends MapService {
       .addQuery('address', address)
       .getUrl();
 
+    console.log(geoUrl);
+
     const { data } = await firstValueFrom(
       this.httpService.get(geoUrl).pipe(
         catchError((error: AxiosError) => {

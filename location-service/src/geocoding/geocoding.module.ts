@@ -8,6 +8,7 @@ import { UrlModule } from 'src/utils/url/url.module';
 import { redisStore } from 'cache-manager-redis-yet';
 import { MapService } from 'src/map-service-plugin/map-service.plugin';
 import { GoogleMapService } from 'src/map-service-plugin/google-map-service.plugin';
+import { GoongService } from 'src/map-service-plugin/goong-service.plugin';
 
 @Module({
   imports: [
@@ -37,7 +38,7 @@ import { GoogleMapService } from 'src/map-service-plugin/google-map-service.plug
         httpService: HttpService,
         configService: ConfigService,
       ): MapService => {
-        return new GoogleMapService(httpService, configService);
+        return new GoongService(httpService, configService);
       },
     },
   ],

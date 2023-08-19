@@ -199,18 +199,7 @@ export class LocationService {
 
     //console.log(result);
 
-    const place = result;
-
-    const data = {
-      place_id: place.place_id,
-      address: place.formatted_address,
-      coordinate: {
-        lat: place.geometry.location.lat,
-        long: place.geometry.location.lng,
-      },
-    };
-
-    return data;
+    return result;
   }
 
   async findFromService(address: string) {
@@ -218,17 +207,17 @@ export class LocationService {
       await this.subscriberService.sendToLocationService('address', address),
     );
 
-    console.log(result);
+    // console.log(result);
 
-    // -- map results
-    const predictions = result.map((place) => ({
-      address: place.formatted_address,
-      place_id: place.place_id,
-    }));
+    // // -- map results
+    // const predictions = result.map((place) => ({
+    //   address: place.formatted_address,
+    //   place_id: place.place_id,
+    // }));
 
     // -- send to client
 
-    return predictions;
+    return result;
   }
 
   // -- TEST
