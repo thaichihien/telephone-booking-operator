@@ -22,6 +22,8 @@ export class CustomerService {
       createCustomerDto,
     );
 
+      //console.log(placeDetail);
+
     // - send to S3
     const tripRequest: TripDto = {
       address: {
@@ -39,6 +41,8 @@ export class CustomerService {
       seat_number: createCustomerDto.seat_number,
     };
 
+    console.log(tripRequest);
+
     // - get result from S3
     const result = await lastValueFrom(await this.subscriberService.sendToBookingService("booking-request",tripRequest))
 
@@ -50,6 +54,8 @@ export class CustomerService {
 
   async getAllDriver() {
     const result = await lastValueFrom(await this.subscriberService.sendToBookingService("drivers",""))
+
+    console.log(result);
 
     return result;
   }

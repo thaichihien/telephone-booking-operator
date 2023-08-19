@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { GeocodingService } from './geocoding.service';
 import { GeocodingController } from './geocoding.controller';
-import { HttpModule } from '@nestjs/axios';
+import { HttpModule, HttpService } from '@nestjs/axios';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UrlModule } from 'src/utils/url/url.module';
 import { redisStore } from 'cache-manager-redis-yet';
+import { MapService } from 'src/map-service-plugin/map-service.plugin';
+import { GoogleMapService } from 'src/map-service-plugin/google-map-service.plugin';
 
 @Module({
   imports: [
@@ -26,6 +28,18 @@ import { redisStore } from 'cache-manager-redis-yet';
     }),
   ],
   controllers: [GeocodingController],
-  providers: [GeocodingService],
+  providers: [
+    GeocodingService,
+    {
+      provide: 'MAP_SERVICE',
+      inject: [HttpService, ConfigService],
+      useFactory: (
+        httpService: HttpService,
+        configService: ConfigService,
+      ): MapService => {
+        return new GoogleMapService(httpService, configService);
+      },
+    },
+  ],
 })
 export class GeocodingModule {}

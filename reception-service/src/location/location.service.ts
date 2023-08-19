@@ -97,18 +97,20 @@ export class LocationService {
 
     const resultFromES = await this.findByPlaceId(createCustomerDto.address_id);
 
-    console.log(resultFromES);
+    //console.log(resultFromES);
     if (resultFromES.hits.hits.length > 0) {
+      // console.log(resultFromES.hits.hits[0]);
       const place : any = resultFromES.hits.hits[0]._source;
+      //console.log(place);
       const data = {
         place_id: place.place_id,
-        address: place.formatted_address,
+        address: place.address,
         coordinate: {
-          lat: place.geometry.location.lat,
-          long: place.geometry.location.lng,
+          lat: place.coordinates.lat,
+          long: place.coordinates.lon,
         },
       };
-
+      //console.log(data);
       return data;
     }
 

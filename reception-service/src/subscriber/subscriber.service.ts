@@ -39,6 +39,7 @@ export class SubscriberService {
       { cmd: 'greeting-async' },
       'Reception',
     );
+    console.log(message);
     return message;
   }
 

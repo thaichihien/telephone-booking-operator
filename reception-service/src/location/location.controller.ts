@@ -43,6 +43,12 @@ export class LocationController {
     return this.locationService.find(address);
   }
 
+  @ApiOperation({ summary: 'search address by place id from history' })
+  @Get('search/:id')
+  findOneByPlaceId(@Param('id') id: string) {
+    return this.locationService.findByPlaceId(id);
+  }
+
   @ApiOperation({ summary: 'search address by id from history' })
   @Get('search-id/:id')
   findOneById(@Param('id') id: string) {
