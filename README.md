@@ -43,7 +43,7 @@ docker compose up -d
 ![architecture-model](https://github.com/thaichihien/telephone-booking-operator/blob/main/doc/architecture-model.png)
 
 ## Micro-Kernel(Plug-In)
-![mirco-kernel]()
+![mirco-kernel](https://github.com/thaichihien/telephone-booking-operator/blob/main/doc/microkernel.png)
 - Thay đổi map service plugin tại **_GeoModule_** ở location-service/src/geocoding/geocoding.module.ts
 ```
  {
