@@ -41,3 +41,53 @@ docker compose up -d
 ## Mô hình
 
 ![architecture-model](https://github.com/thaichihien/telephone-booking-operator/blob/main/doc/architecture-model.png)
+
+## Micro-Kernel(Plug-In)
+![mirco-kernel]()
+- Thay đổi map service plugin tại **_GeoModule_** ở location-service/src/geocoding/geocoding.module.ts
+```
+ {
+  provide: 'MAP_SERVICE',
+  inject: [HttpService, ConfigService],
+  useFactory: (
+    httpService: HttpService,
+    configService: ConfigService,
+  ): MapService => {
+    // thay đổi map service plugin tại đây bằng lớp map service phù hợp
+    return new GoongService(httpService, configService);
+  },
+},
+```
+- Dễ dàng tạo thêm plugin map service bằng cách kế thừa MapService
+```
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
+
+export class Coordinates {
+  lat: number;
+  long: number;
+}
+
+export class MapData {
+  place_id: string;
+  address: string;
+}
+
+export class MapDataDetail extends MapData {
+  coordinates: Coordinates;
+}
+
+export abstract class MapService {
+  abstract host: string;
+  protected httpService: HttpService;
+  protected configService: ConfigService;
+
+  constructor(httpService: HttpService, configService: ConfigService) {
+    this.httpService = httpService;
+    this.configService = configService;
+  }
+
+  abstract geocoding(address: string): Promise<MapData[]>;
+  abstract getPlaceDetail(placeId: string): Promise<MapDataDetail>;
+}
+```
